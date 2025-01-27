@@ -9,12 +9,21 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "-My TODO\r user->\r myTodo/add-todo\r myTodo/\r myTdo/dlt-todo",
   "dependencies": {
     "cookie-parser": "^1.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.5",
     "nodemon": "^3.1.9"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vivek-787/todo-for-org.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Vivek-787/todo-for-org/issues"
+  },
+  "homepage": "https://github.com/Vivek-787/todo-for-org#readme"
 }

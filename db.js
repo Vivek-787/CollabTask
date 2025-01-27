@@ -7,7 +7,8 @@ const organizationSchema = new Schema({
   name: String,
   creatorId: ObjectId,
   role: { type: String, enum: ["creator", "member"], default: "member" },
-  orgId: ObjectId,
+  orgId: ObjectId, 
+  memberIds : [ObjectId]
 });
 
 const toDoSchema = new Schema({
@@ -19,6 +20,7 @@ const userSchema = new Schema({
   name: String,
   email: { type: String, unique: true },
   password: String,
+  userId: ObjectId
 });
 
 const toDoModel = mongoose.model("todo", toDoSchema);

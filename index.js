@@ -16,7 +16,7 @@ app.use("/organization", orgRouter);
 const main = async () => {
   try {
     await mongoose.connect(
-      "mongodb+srv://sohamkgaikwad:bMLsPm9QclQ6GTWo@first.gjolh.mongodb.net/to_do_list"
+      "mongodb+srv://viveksanandiya787:d7yqVkzeapL1ac7u@cluster0.7f2f6.mongodb.net/todoNotion"
     );
 
     app.listen(3000, () => {
