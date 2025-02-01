@@ -8,23 +8,27 @@ const { auth } = require("../middleware/auth");
 userRouter.post("/signup", async function (req, res) {
   try {
     const { email, password, name } = req.body;
+    
     const existingUser = await userModel.findOne({ email });
     if (existingUser) return res.json({ message: "User Already Exists !!" });
 
-    await userModel.create({
+    const newUser = await userModel.create({
       email: email,
       password: password,
       name: name,
     });
 
-    return res.json("Data Saved Successfully");
+    return res.json({
+      message: "Data Saved Successfully",
+      userId:newUser._id
+    });
   } catch (error) {
     console.log(error.message);
     return res.send(error.message);
   }
 });
 
-userRouter.post("/signin", async function (req, res) {
+userRouter.post("/signin",async function (req, res) {
   try {
     const { email, password, name } = req.body;
 
@@ -39,7 +43,7 @@ userRouter.post("/signin", async function (req, res) {
     }
 
     const passMatch = true;
-
+    
     if (passMatch) {
       const token = jwt.sign(
         {
@@ -54,6 +58,8 @@ userRouter.post("/signin", async function (req, res) {
       res.cookie("token", token);
       res.json({
         message: "Sign in successfully--------",
+        token: token,
+        userId: user._id,
       });
     } else {
       throw new Error("pass Match error");
