@@ -13,6 +13,13 @@ const organizationSchema = new Schema({
   orgId: ObjectId,
 });
 
+const orgToDoSchema = new Schema({
+  title: String,
+  description: String,
+  completed: { type: Boolean, default: false },
+  orgId :{ type: ObjectId, ref: "orgization" }
+});
+
 const toDoSchema = new Schema({
   title: String,
   description: String,
@@ -26,8 +33,10 @@ const userSchema = new Schema({
   password: String
 });
 
+
 const toDoModel = mongoose.model("todo", toDoSchema);
 const organizationModel = mongoose.model("organization", organizationSchema);
 const userModel = mongoose.model("user", userSchema);
+const orgToDoModel = mongoose.model("orgTodo", orgToDoSchema);
 
-module.exports = { toDoModel, organizationModel, userModel };
+module.exports = { toDoModel, organizationModel, userModel , orgToDoModel};

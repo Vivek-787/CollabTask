@@ -13,7 +13,7 @@ orgRouter.post("/", auth, async function (req, res) {
 
     // Ensure `userId` is a valid ObjectId
     const creatorObjectId = new mongoose.Types.ObjectId(userId);
-
+    
     // Create the organization with the creator stored in `members`
     const newOrg = await organizationModel.create({
       name,
@@ -85,14 +85,53 @@ orgRouter.post("/add-user", auth, async function (req, res) {
   }
 });
 
+orgRouter.post("/remove-user", auth, async function (req, res){
+  try {
+    const creatorId = req.userId; // Get the creator's ID from auth middleware
+    const { email } = req.body;
 
+    if (!email) {
+      return res.status(400).json({ message: "User email is required" });
+    }
 
-//get todo list
-// orgRouter.get("/",auth, async function(req, res) {
-  
-// })
+    // Find the organization where the current user is the creator
+    const orgDetail = await organizationModel.findOne({ creatorId });
 
+    if (!orgDetail) {
+      return res.status(404).json({ message: "Organization not found or you are not the creator" });
+    }
 
+    const userDetail = await userModel.findOne({ email });
+
+    if (!userDetail) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const userId = userDetail._id;
+
+    // Check if the user is in the organization or removed already
+    const doesMemberExist = orgDetail.members.some(member =>
+      member.userId.equals(userId)
+    );
+
+    if (!doesMemberExist) {
+      return res.status(400).json({ message: "member does not exist in this org" });
+    }
+
+    const removedUser = await organizationModel.findOneAndUpdate(
+      { _id: orgDetail._id },
+      { $pull: { members: { userId } } }
+    );
+
+    res.status(200).json({
+      message: "removed it yaaah !", removedUser 
+    });
+
+  }catch (error) {
+    console.error("Error removing user to organization:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+});
 
 module.exports = {
   orgRouter,
