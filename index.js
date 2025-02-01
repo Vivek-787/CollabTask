@@ -9,22 +9,23 @@ app.use(cookieParser());
 
 const { userRouter } = require("./routes/user");
 const { orgRouter } = require("./routes/organization");
+const { todoRouter } = require("./routes/myTodo");
 
+
+app.use("/todo", todoRouter);
 app.use("/user", userRouter);
 app.use("/organization", orgRouter);
 
 const main = async () => {
   try {
-    await mongoose.connect(
-      ""
-    );
+    await mongoose.connect("");
 
     app.listen(3000, () => {
       console.log("Connected Successfully");
     });
   } catch (error) {
     console.log("Db problem" + error.message);
-  }
-};
+  } 
+}; 
 
 main();
