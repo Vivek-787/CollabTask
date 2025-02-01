@@ -17,14 +17,14 @@ const orgToDoSchema = new Schema({
   title: String,
   description: String,
   completed: { type: Boolean, default: false },
-  orgId :{ type: ObjectId, ref: "orgization" }
+  orgId :{ type: ObjectId, ref: "organization" }
 });
 
 const toDoSchema = new Schema({
   title: String,
   description: String,
   completed: { type: Boolean, default: false },
-  // userId: { type: ObjectId, ref: "user" }
+  userId: { type: ObjectId, ref: "user" }
 });
 
 const userSchema = new Schema({

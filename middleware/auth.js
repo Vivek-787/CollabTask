@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const JWT_USER_PASS = "user123";
+const JWT_USER_PASS = "user123"; 
 
 async function auth(req, res, next) {
   const { token } = req.cookies;
