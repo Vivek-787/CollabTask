@@ -18,7 +18,7 @@ app.use("/organization", orgRouter);
 
 const main = async () => {
   try {
-    await mongoose.connect("mongodb+srv://viveksanandiya787:mT6mqcz8pOZeGU5i@cluster0.7f2f6.mongodb.net/todo-copy");
+    await mongoose.connect("");
 
     app.listen(3000, () => {
       console.log("Connected Successfully");
