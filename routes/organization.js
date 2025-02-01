@@ -23,9 +23,13 @@ orgRouter.post("/", auth, async function (req, res) {
     console.log(newOrg);
     console.log(creatorObjectId);
     
+    res.cookie("orgId", newOrg._id);    //=========================
+
+
     res.status(201).json({
       message: "Organization created successfully",
       organization: newOrg,
+      orgId : newOrg._id,               //===========================
     });
   } catch (error) {
     console.error("Error creating organization:", error);
