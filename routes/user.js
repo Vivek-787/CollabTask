@@ -2,25 +2,46 @@ const router = require("express");
 const userRouter = router();
 const { userModel } = require("../db");
 const jwt = require("jsonwebtoken");
-const JWT_USER_PASSWORD = "user123";
+const {JWT_USER_PASSWORD} = require("../config");
 const { auth } = require("../middleware/auth");
 
+const bcrypt = require("bcrypt");
+const z = require("zod");
+
 userRouter.post("/signup", async function (req, res) {
+  const requiredData = z.object({
+    email: z.string().email().min(2).max(50),
+    password: z.string().min(6).max(20),
+    name: z.string().min(1).max(30),
+  });
+
+  const parsedData = requiredData.safeParse(req.body);
+
+  if (!parsedData.success) {
+    res.json({
+      message: "incorrect input format",
+      error: parsedData.error,
+    });
+    return;
+  }
+
   try {
     const { email, password, name } = req.body;
-    
+
     const existingUser = await userModel.findOne({ email });
     if (existingUser) return res.json({ message: "User Already Exists !!" });
 
+    const hashedPass = await bcrypt.hash(password, 5);
+
     const newUser = await userModel.create({
       email: email,
-      password: password,
+      password: hashedPass,
       name: name,
     });
 
     return res.json({
       message: "Data Saved Successfully",
-      userId:newUser._id
+      userId: newUser._id,
     });
   } catch (error) {
     console.log(error.message);
@@ -28,7 +49,22 @@ userRouter.post("/signup", async function (req, res) {
   }
 });
 
-userRouter.post("/signin",async function (req, res) {
+userRouter.post("/signin", async function (req, res) {
+  const requiredData = z.object({
+    email: z.string().email().min(2).max(50),
+    password: z.string().min(6).max(20),
+  });
+
+  const parsedData = requiredData.safeParse(req.body);
+
+  if (!parsedData.success) {
+    res.json({
+      message: "incorrect input format",
+      error: parsedData.error,
+    });
+    return;
+  }
+
   try {
     const { email, password, name } = req.body;
 
@@ -42,8 +78,8 @@ userRouter.post("/signin",async function (req, res) {
       });
     }
 
-    const passMatch = true;
-    
+    const passMatch = await bcrypt.compare(password, user.password);
+
     if (passMatch) {
       const token = jwt.sign(
         {
@@ -52,9 +88,6 @@ userRouter.post("/signin",async function (req, res) {
         JWT_USER_PASSWORD
       );
 
-      // res.json({
-      //   token: token,
-      // });
       res.cookie("token", token);
       res.json({
         message: "Sign in successfully--------",

@@ -1,12 +1,27 @@
 const router = require("express"); 
 const orgRouter = router();
 const { userModel, organizationModel } = require("../db");
-// const jwt = require("jsonwebtoken");
-// const JWT_USER_PASSWORD = "user123";
 const { auth } = require("../middleware/auth");
 const mongoose = require("mongoose");
+ 
+const z = require("zod");
 
 orgRouter.post("/", auth, async function (req, res) {
+  
+    const requiredData =z.object({
+      name: z.string().min(1).max(50)
+    });
+  
+    const parsedData = requiredData.safeParse(req.body);
+  
+    if(!parsedData.success){
+      res.json({
+        message:"incorrect input format",
+        error: parsedData.error
+      })
+      return
+    }
+  
   try {
     const userId = req.userId;
     const { name } = req.body;
@@ -38,6 +53,21 @@ orgRouter.post("/", auth, async function (req, res) {
 });
 
 orgRouter.post("/add-user", auth, async function (req, res) {
+  
+    const requiredData =z.object({
+      email: z.string().email().min(2).max(50)
+    });
+  
+    const parsedData = requiredData.safeParse(req.body);
+  
+    if(!parsedData.success){
+      res.json({
+        message:"incorrect input format",
+        error: parsedData.error
+      })
+      return
+    }
+  
   try {
     const creatorId = req.userId; // Get the creator's ID from auth middleware
     const { email } = req.body;
@@ -90,6 +120,21 @@ orgRouter.post("/add-user", auth, async function (req, res) {
 });
 
 orgRouter.post("/remove-user", auth, async function (req, res){
+  
+    const requiredData =z.object({
+      email: z.string().email().min(2).max(50)
+    });
+  
+    const parsedData = requiredData.safeParse(req.body);
+  
+    if(!parsedData.success){
+      res.json({
+        message:"incorrect input format",
+        error: parsedData.error
+      })
+      return
+    }
+  
   try {
     const creatorId = req.userId; // Get the creator's ID from auth middleware
     const { email } = req.body;
